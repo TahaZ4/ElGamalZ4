@@ -1,32 +1,28 @@
 import random
 
-# Function to calculate the modular inverse of a number 'a' with respect to 'm'
+# Configuration - CHANGE THESE VALUES
+PRIME = 7919        # Prime modulus
+BASE_G = 5          # Generator base
+
 def calculate_inverse(a, m):
+    """Calculate modular inverse using extended Euclidean algorithm"""
     m0, x0, x1 = m, 0, 1
     while a > 1:
         quotient = a // m
         m, a = a % m, m
         x0, x1 = x1 - quotient * x0, x0
-    if x1 < 0:
-        x1 += m0
-    return x1
+    return x1 + m0 if x1 < 0 else x1
 
-# Function to generate public and private keys for ElGamal encryption
-def generate_keys(p):
-    g = 5  # A fixed base (primitive root). It could vary in practice.
-    x = random.randint(2, p - 2)  # Random private key 'x'.
-    y = pow(g, x, p)  # Calculate the public key part y = g^x % p.
+def generate_keys():
+    """Generate public and private keys"""
+    x = random.randint(2, PRIME - 2)  # Private key
+    y = pow(BASE_G, x, PRIME)         # Public key component
+    return (PRIME, BASE_G, y), x
 
-    # Return the public key (p, g, y) and the private key 'x'
-    return (p, g, y), x
-
-# Main function to run the key generation
 if __name__ == "__main__":
-    p = 7919  # A large prime number used for key generation.
-    
-    # Generate public and private keys
-    public_key, private_key = generate_keys(p)
-    
-    # Print out the keys
-    print("Public Key:", public_key)
-    print("Private Key:", private_key)
+    # Test key generation
+    public_key, private_key = generate_keys()
+    print("Key Generation Module")
+    print(f"Prime: {PRIME}, Base: {BASE_G}")
+    print(f"Public Key (p,g,y): {public_key}")
+    print(f"Private Key (x): {private_key}")
