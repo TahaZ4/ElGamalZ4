@@ -22,7 +22,7 @@ def test_decrypt_message():
     print("Test 1: Known Value Verification")
     print(f"Inputs: p={p}, x={x}, c1={c1}, c2_list={c2_list}")
     print(f"Output: '{decrypted}'")
-    print(f"Validation: {'PASS' if decrypted == 'A' else 'FAIL'}\n")
+    print(f"Validation: {'PASSED' if decrypted == 'A' else 'FAILED'}\n")
     
     # Test 2: Multi-character decryption
     p, x, c1 = 31, 17, 29
@@ -31,7 +31,7 @@ def test_decrypt_message():
     print("Test 2: Multi-character Validation")
     print(f"Inputs: p={p}, x={x}, c1={c1}, c2_list={c2_list}")
     print(f"Output: '{decrypted}'")
-    print(f"Validation: {'PASS' if decrypted == 'Hi' else 'FAIL'}")
+    print(f"Validation: {'PASSED' if decrypted == 'Hi' else 'FAILED'}")
 
 if __name__ == "__main__":
     test_decrypt_message()
