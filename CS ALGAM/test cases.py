@@ -1,38 +1,37 @@
-import random
-
-# Encrypt message using the public key
-def encrypt_message(p, g, y, message):
-    # Convert message to ASCII values
-    message_ascii = [ord(char) for char in message]
+def decrypt_message(p, x, c1, c2_list):
+    """Decrypt message using private key"""
+    # Recover shared secret
+    s = pow(c1, x, p)
     
-    # Generate a random value k for encryption
-    k = random.randint(2, p - 2)
-    c1 = pow(g, k, p)  # Compute g^k % p
+    # Calculate modular inverse
+    s_inv = pow(s, p-2, p)  # Using Fermat's for prime modulus
     
-    # Encrypt the message using y^k
-    c2_list = [(m * pow(y, k, p)) % p for m in message_ascii]
+    # Decrypt each character
+    decrypted_ascii = [(c2 * s_inv) % p for c2 in c2_list]
     
-    return c1, c2_list
+    # Convert to text
+    return ''.join(chr(m) for m in decrypted_ascii)
 
-
-# test cases
-def test_encrypt_message():
-    # Test 1: Single-character message
-    random.seed(42)  # Fix randomness for reproducibility
-    p, g, y, message = 23, 5, 10, "A"
-    c1, c2_list = encrypt_message(p, g, y, message)
-    print("Test 1: Single-character message")
-    print(f"Inputs: p={p}, g={g}, y={y}, message='{message}'")
-    print(f"Outputs: c1={c1}, c2_list={c2_list}\n")
+# Test cases
+def test_decrypt_message():
+    """Validation protocol for decryption module"""
+    # Test 1: Known value verification
+    p, x, c1 = 23, 6, 8
+    c2_list = [5]
+    decrypted = decrypt_message(p, x, c1, c2_list)
+    print("Test 1: Known Value Verification")
+    print(f"Inputs: p={p}, x={x}, c1={c1}, c2_list={c2_list}")
+    print(f"Output: '{decrypted}'")
+    print(f"Validation: {'PASS' if decrypted == 'A' else 'FAIL'}\n")
     
-    # Test 2: Multi-character message
-    random.seed(42)  # Reset randomness to get the same k
-    p, g, y, message = 31, 3, 17, "Hi"
-    c1, c2_list = encrypt_message(p, g, y, message)
-    print("Test 2: Multi-character message")
-    print(f"Inputs: p={p}, g={g}, y={y}, message='{message}'")
-    print(f"Outputs: c1={c1}, c2_list={c2_list}\n")
+    # Test 2: Multi-character decryption
+    p, x, c1 = 31, 17, 29
+    c2_list = [19, 15]
+    decrypted = decrypt_message(p, x, c1, c2_list)
+    print("Test 2: Multi-character Validation")
+    print(f"Inputs: p={p}, x={x}, c1={c1}, c2_list={c2_list}")
+    print(f"Output: '{decrypted}'")
+    print(f"Validation: {'PASS' if decrypted == 'Hi' else 'FAIL'}")
 
-
-# Run the tests
-test_encrypt_message()
+if __name__ == "__main__":
+    test_decrypt_message()
